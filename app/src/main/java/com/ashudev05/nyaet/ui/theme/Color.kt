@@ -60,4 +60,4 @@ val inverseSurfaceDark = Color(0xFFE0E4DB)
 val inverseOnSurfaceDark = Color(0xFF2D322C)
 val inversePrimaryDark = Color(0xFF36693E)
 
-val Divider = Color(0x20787880)
+val dividerColor = Color(0x20787880)

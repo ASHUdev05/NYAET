@@ -2,9 +2,9 @@ package com.ashudev05.nyaet.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ashudev05.nyaet.components.TableRow
 import com.ashudev05.nyaet.ui.theme.Shapes
+import com.ashudev05.nyaet.ui.theme.dividerColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,8 +46,27 @@ fun Settings(navController: NavController) {
                         .clip(Shapes.medium)
                         .background(MaterialTheme.colorScheme.secondaryContainer)
                 ) {
-                    TableRow(label = "Categories", hasArrow = true,color = MaterialTheme.colorScheme.onSecondaryContainer)
-                    TableRow(label = "Erase all data", isDestructive = true,color = MaterialTheme.colorScheme.onSecondaryContainer)
+                    TableRow(
+                        label = "Categories",
+                        hasArrow = true,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        onClick = {
+                            _ -> run {
+                                navController.navigate("settings/categories")
+                        }
+                        }
+                    )
+                    Divider(
+                        modifier = Modifier.padding(start = 16.dp),
+                        thickness = 1.dp,
+                        color = dividerColor
+                    )
+                    TableRow(
+                        label = "Erase all data",
+                        isDestructive = true,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        onClick = {}
+                    )
                 }
             }
         }
