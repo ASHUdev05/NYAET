@@ -1,10 +1,10 @@
 package com.ashudev05.nyaet.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -15,21 +15,27 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ashudev05.nyaet.components.TableRow
+import com.ashudev05.nyaet.components.UnstyledTextField
 import com.ashudev05.nyaet.ui.theme.Shapes
 import com.ashudev05.nyaet.ui.theme.dividerColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Settings(navController: NavController) {
+fun Add(
+    navController: NavController
+) {
     Scaffold(
         topBar = {
             MediumTopAppBar(
                 title = {
                     Text(
-                        text = "Settings",
+                        text = "Add",
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 },
@@ -48,12 +54,29 @@ fun Settings(navController: NavController) {
                         .background(MaterialTheme.colorScheme.secondaryContainer)
                 ) {
                     TableRow(
-                        label = "Categories",
-                        hasArrow = true,
+                        label = "Amount",
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        modifier = Modifier.clickable {
-                            navController.navigate("settings/categories")
-                        }
+                    ) {
+                        UnstyledTextField(
+                            value = "Hello",
+                            onValueChange = {},
+                            modifier = Modifier.fillMaxWidth(),
+                            textStyle = TextStyle(
+                                textAlign = TextAlign.End
+                            ),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number,
+                            ),
+                        )
+                    }
+                    Divider(
+                        modifier = Modifier.padding(start = 16.dp),
+                        thickness = 1.dp,
+                        color = dividerColor
+                    )
+                    TableRow(
+                        label = "Recurrence",
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                     )
                     Divider(
                         modifier = Modifier.padding(start = 16.dp),
@@ -61,8 +84,25 @@ fun Settings(navController: NavController) {
                         color = dividerColor
                     )
                     TableRow(
-                        label = "Erase all data",
-                        isDestructive = true,
+                        label = "Date",
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    )
+                    Divider(
+                        modifier = Modifier.padding(start = 16.dp),
+                        thickness = 1.dp,
+                        color = dividerColor
+                    )
+                    TableRow(
+                        label = "Note",
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    )
+                    Divider(
+                        modifier = Modifier.padding(start = 16.dp),
+                        thickness = 1.dp,
+                        color = dividerColor
+                    )
+                    TableRow(
+                        label = "Category",
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
                     )
                 }

@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -21,6 +22,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.ashudev05.nyaet.screens.Add
 import com.ashudev05.nyaet.screens.Expenses
 import com.ashudev05.nyaet.screens.Settings
 import com.ashudev05.nyaet.ui.theme.NYAETTheme
@@ -34,6 +36,20 @@ class MainActivity : ComponentActivity() {
                 val backStackEntry = navController.currentBackStackEntryAsState()
 
                 Scaffold(
+                    topBar = {},
+                    floatingActionButton = {
+                        FloatingActionButton(
+                            onClick = { navController.navigate("add") },
+                            shape = MaterialTheme.shapes.small,
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.add_24px),
+                                contentDescription = "Add"
+                            )
+                        }
+                    },
                     bottomBar = {
                         NavigationBar {
                             NavigationBarItem(
@@ -62,21 +78,22 @@ class MainActivity : ComponentActivity() {
                                     )
                                 }
                             )
+//                            NavigationBarItem(
+//                                selected = backStackEntry.value?.destination?.route == "add",
+//                                onClick = { navController.navigate("add") },
+//                                label = {
+//                                    Text("Add")
+//                                },
+//                                icon = {
+//                                    Icon(
+//                                        painter = painterResource(id = R.drawable.add_24px),
+//                                        contentDescription = "Add"
+//                                    )
+//                                }
+//                            )
                             NavigationBarItem(
-                                selected = backStackEntry.value?.destination?.route == "add",
-                                onClick = { navController.navigate("add") },
-                                label = {
-                                    Text("Add")
-                                },
-                                icon = {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.add_24px),
-                                        contentDescription = "Add"
-                                    )
-                                }
-                            )
-                            NavigationBarItem(
-                                selected = backStackEntry.value?.destination?.route?.startsWith("settings") ?: false,
+                                selected = backStackEntry.value?.destination?.route?.startsWith("settings")
+                                    ?: false,
                                 onClick = { navController.navigate("settings") },
                                 label = {
                                     Text("Settings")
@@ -120,7 +137,7 @@ class MainActivity : ComponentActivity() {
                                         .padding(innerPadding),
                                     color = MaterialTheme.colorScheme.background
                                 ) {
-                                    Greeting("Add")
+                                    Add(navController)
                                 }
                             }
                             composable("settings") {
