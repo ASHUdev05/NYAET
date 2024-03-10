@@ -6,6 +6,7 @@ import android.widget.DatePicker
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,6 +14,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.DatePickerColors
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -25,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,25 +42,37 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.ashudev05.nyaet.components.TableRow
 import com.ashudev05.nyaet.components.UnstyledTextField
+import com.ashudev05.nyaet.models.Recurrence
 import com.ashudev05.nyaet.ui.theme.NYAETTheme
 import com.ashudev05.nyaet.ui.theme.Shapes
 import com.ashudev05.nyaet.ui.theme.dividerColor
+import com.ashudev05.nyaet.viewmodels.AddViewModel
+import java.time.LocalDateTime
 import java.util.Calendar
 import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Add(
-    navController: NavController
+    navController: NavController,
+    addViewModel: AddViewModel = viewModel()
 ) {
-    val recurrences = listOf("None", "Daily", "Weekly", "Monthly", "Yearly")
-    var selectedRecurrence by remember { mutableStateOf(recurrences[0]) }
+    val state by addViewModel.uiState.collectAsState()
+    val recurrences = listOf(
+        Recurrence.None,
+        Recurrence.Daily,
+        Recurrence.Weekly,
+        Recurrence.Monthly,
+        Recurrence.Yearly,
+    )
     val categories = listOf("Food", "Transport", "Entertainment", "Utilities", "Other")
-    var selectedCategory by remember { mutableStateOf(categories[0]) }
+
     val mYear: Int
     val mMonth: Int
     val mDay: Int
@@ -134,15 +150,15 @@ fun Add(
                     ) {
                         var recurrenceMenuOpened by remember { mutableStateOf(false) }
                         TextButton(onClick = { recurrenceMenuOpened = true }) {
-                            Text(text = selectedRecurrence)
+                            Text(text = state.recurrence.name)
                             DropdownMenu(
                                 expanded = recurrenceMenuOpened,
                                 onDismissRequest = { recurrenceMenuOpened = false }) {
                                 recurrences.forEach { recurrence ->
                                     DropdownMenuItem(
-                                        text = { Text(recurrence) },
+                                        text = { Text(recurrence.name) },
                                         onClick = {
-                                            selectedRecurrence = recurrence
+                                            addViewModel.setRecurrence(recurrence)
                                             recurrenceMenuOpened = false
                                         },
                                     )
@@ -196,7 +212,7 @@ fun Add(
                     ) {
                         var categoriesMenuOpened by remember { mutableStateOf(false) }
                         TextButton(onClick = { categoriesMenuOpened = true }) {
-                            Text(text = selectedCategory)
+                            Text(text = state.category ?: "Select Category")
                             DropdownMenu(
                                 expanded = categoriesMenuOpened,
                                 onDismissRequest = { categoriesMenuOpened = false }) {
@@ -209,7 +225,7 @@ fun Add(
                                             }
                                         },
                                         onClick = {
-                                            selectedCategory = category
+                                            addViewModel.setCategory(category)
                                             categoriesMenuOpened = false
                                         },
                                     )
