@@ -126,8 +126,10 @@ fun Add(
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
                     ) {
                         UnstyledTextField(
-                            value = "Hello",
-                            onValueChange = {},
+                            value = "${state.amount ?: 0.0}",
+                            onValueChange = {
+                                addViewModel.setAmount(it.toDoubleOrNull() ?: 0.0)
+                            },
                             modifier = Modifier
                                 .fillMaxWidth(),
                             textStyle = TextStyle(

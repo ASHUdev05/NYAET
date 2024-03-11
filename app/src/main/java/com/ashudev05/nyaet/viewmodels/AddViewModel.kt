@@ -10,10 +10,11 @@ import java.time.LocalDate
 
 data class AddScreenState(
     val amount: Number,
-    val recurrence: Recurrence,
+    val recurrence: Recurrence = Recurrence.None,
     val date: LocalDate,
     val note: String = "",
     val category: String,
+    val recurrenceMenuOpened: Boolean = false,
 )
 
 class AddViewModel: ViewModel() {
