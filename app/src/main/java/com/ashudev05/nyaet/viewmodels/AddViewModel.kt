@@ -9,26 +9,22 @@ import kotlinx.coroutines.flow.update
 import java.time.LocalDate
 
 data class AddScreenState(
-    val amount: Number,
-    val recurrence: Recurrence = Recurrence.None,
-    val date: LocalDate,
-    val note: String = "",
-    val category: String,
-    val recurrenceMenuOpened: Boolean = false,
+    val amount: String = "₹ 0.00",
+    val recurrence: Recurrence? = null,
+    val date: LocalDate? = null,
+    val note: String = "Add a note",
+    val category: String? = null,
 )
 
 class AddViewModel: ViewModel() {
-    private val _uiState = MutableStateFlow(AddScreenState(
-        amount = 0.0,
-        recurrence = Recurrence.None,
-        date = LocalDate.now(),
-        category = ""
-    ))
+    private val _uiState = MutableStateFlow(AddScreenState())
     val uiState: StateFlow<AddScreenState> = _uiState.asStateFlow()
 
-    fun setAmount(amount: Double) {
+    fun setAmount(amount: String) {
         _uiState.update { currentState ->
-            currentState.copy(amount = amount)
+            currentState.copy(
+                amount = amount.trim()
+            )
         }
     }
 

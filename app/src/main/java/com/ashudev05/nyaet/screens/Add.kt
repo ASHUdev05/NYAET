@@ -6,7 +6,6 @@ import android.widget.DatePicker
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,8 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.DatePickerColors
-import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -42,7 +39,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -53,7 +49,6 @@ import com.ashudev05.nyaet.ui.theme.NYAETTheme
 import com.ashudev05.nyaet.ui.theme.Shapes
 import com.ashudev05.nyaet.ui.theme.dividerColor
 import com.ashudev05.nyaet.viewmodels.AddViewModel
-import java.time.LocalDateTime
 import java.util.Calendar
 import java.util.Date
 
@@ -86,14 +81,7 @@ fun Add(
     mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
     val mDate = remember { mutableStateOf("${mDay}/${mMonth+1}/$mYear") }
 
-    val mDatePickerDialog = DatePickerDialog(
-        mContext,
-        { _: DatePicker, selectedYear: Int, selectedMonth: Int, selectedDay: Int ->
-            mDate.value = "$selectedDay/${selectedMonth+1}/$selectedYear"
-        }, mYear, mMonth, mDay
-    )
 
-    mDatePickerDialog.datePicker.maxDate = mCalendar.timeInMillis
 
     Scaffold(
         topBar = {
@@ -126,16 +114,17 @@ fun Add(
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
                     ) {
                         UnstyledTextField(
-                            value = "${state.amount ?: 0.0}",
-                            onValueChange = {
-                                addViewModel.setAmount(it.toDoubleOrNull() ?: 0.0)
-                            },
+                            value = state.amount,
+                            onValueChange = addViewModel::setAmount,
                             modifier = Modifier
                                 .fillMaxWidth(),
                             textStyle = TextStyle(
                                 textAlign = TextAlign.Right,
 
                                 ),
+                            placeholder = { Text("₹ 0.00") },
+                            arrangement = Arrangement.End,
+                            maxLines = 1,
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Number,
                             ),
@@ -152,7 +141,7 @@ fun Add(
                     ) {
                         var recurrenceMenuOpened by remember { mutableStateOf(false) }
                         TextButton(onClick = { recurrenceMenuOpened = true }) {
-                            Text(text = state.recurrence.name)
+                            Text(text = state.recurrence?.name ?: Recurrence.None.name)
                             DropdownMenu(
                                 expanded = recurrenceMenuOpened,
                                 onDismissRequest = { recurrenceMenuOpened = false }) {
@@ -173,14 +162,26 @@ fun Add(
                         thickness = 1.dp,
                         color = dividerColor
                     )
+                    val datePickerShowing = remember { mutableStateOf(false) }
                     TableRow(
                         label = "Date",
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
                     ) {
                         TextButton(onClick = {
-                            mDatePickerDialog.show()
+                            datePickerShowing.value = true
                         }) {
                             Text(text = mDate.value)
+                        }
+                        if(datePickerShowing.value){
+                            val mDatePickerDialog = DatePickerDialog(
+                                mContext,
+                                { _: DatePicker, selectedYear: Int, selectedMonth: Int, selectedDay: Int ->
+                                    mDate.value = "$selectedDay/${selectedMonth+1}/$selectedYear"
+                                }, mYear, mMonth, mDay
+                            )
+
+                            mDatePickerDialog.datePicker.maxDate = mCalendar.timeInMillis
+                            mDatePickerDialog.show()
                         }
                     }
                     Divider(
@@ -193,10 +194,10 @@ fun Add(
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
                     ) {
                         UnstyledTextField(
-                            value = "",
+                            value = state.note,
                             placeholder = { Text("Leave a note") },
                             arrangement = Arrangement.End,
-                            onValueChange = {},
+                            onValueChange = addViewModel::setNote,
                             modifier = Modifier.fillMaxWidth(),
                             textStyle = TextStyle(
                                 textAlign = TextAlign.Right
@@ -237,7 +238,7 @@ fun Add(
                     }
                 }
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = addViewModel::submitExpense,
                     modifier = Modifier
                         .padding(top = 20.dp)
                         .align(Alignment.CenterHorizontally),
